@@ -1,21 +1,21 @@
 import socket, select
 
-if name == "__main__":
+CONNECTION_LIST = []  # list of socket clients
+RECV_BUFFER = 4096  # Advisable to keep it as an exponent of 2
+PORT = 58583
 
-    CONNECTION_LIST = []  # list of socket clients
-    RECV_BUFFER = 4096  # Advisable to keep it as an exponent of 2
-    PORT = 5000
 
+def start():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # this has no effect, why ?
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind(("0.0.0.0", PORT))
+    server_socket.bind(("", PORT))
     server_socket.listen(10)
 
     # Add server socket to the list of readable connections
     CONNECTION_LIST.append(server_socket)
 
-    print("Chat server started on port " + str(PORT))
+    print("server started on port " + str(PORT))
 
     while 1:
         # Get the list sockets which are ready to be read through select
