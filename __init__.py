@@ -1,5 +1,6 @@
 from socket import AF_INET, socket, SOCK_STREAM
 from threading import Thread
+from time import sleep
 
 clients = {}
 addresses = {}
@@ -18,6 +19,7 @@ def accept_incoming_connections():
         client, client_address = SOCK.accept()
         print("%s:%s has connected." % client_address)
         client.send("Greetings from the ChatRoom! ".encode("utf8"))
+        sleep(5)
         client.send("Now type your name and press enter!".encode("utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client, client_address)).start()
@@ -25,7 +27,11 @@ def accept_incoming_connections():
 
 def handle_client(conn, addr):  # Takes client socket as argument.
     """Handles a single client connection."""
-    name = conn.recv(BUFSIZ).decode("utf8")
+    try:
+        name = conn.recv(BUFSIZ).decode("utf8")
+    except ConnectionResetError:
+        print("User disconnected")
+        return
     welcome = 'Welcome %s! If you ever want to quit, type #quit to exit.' % name
     conn.send(bytes(welcome, "utf8"))
     msg = "%s from [%s] has joined the chat!" % (name, "{}:{}".format(addr[0], addr[1]))
