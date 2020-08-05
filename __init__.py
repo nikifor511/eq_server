@@ -19,7 +19,7 @@ def accept_incoming_connections():
         client, client_address = SOCK.accept()
         print("%s:%s has connected." % client_address)
         client.send("Greetings from the ChatRoom! ".encode("utf8"))
-        sleep(5)
+        # sleep(5)
         client.send("Now type your name and press enter!".encode("utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client, client_address)).start()
