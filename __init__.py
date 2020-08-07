@@ -24,24 +24,16 @@ def accept_incoming_connections():
         Thread(target=handle_client, args=(client, client_address)).start()
 
 
-def handle_client(conn, addr):  # Takes client socket as argument.
-    """Handles a single client connection."""
-    # try:
-    #     name = conn.recv(BUFSIZ).decode("utf8")
-    # except ConnectionResetError:
-    #     pass
-    #     return
-    # welcome =
+def handle_client(conn, addr):
+
     conn.send(bytes("Welcome", "utf8"))
-    # msg = "%s from [%s] has joined the chat!" % (name, "{}:{}".format(addr[0], addr[1]))
-    # broadcast(bytes(msg, "utf8"))
     clients[conn] = addr
     while True:
         msg = conn.recv(BUFSIZ)
         if msg != bytes("#quit", "utf8"):
-            broadcast(msg, addr + ": ")
+            broadcast(msg, str(addr[0]) + ": ")
         else:
-            conn.send(bytes("#quit", "utf8"))
+            # conn.send(bytes("#quit", "utf8"))
             conn.close()
             del clients[conn]
             # broadcast(bytes("%s has left the chat." % addr, "utf8"), "cc")
