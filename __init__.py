@@ -19,33 +19,33 @@ def accept_incoming_connections():
         client, client_address = SOCK.accept()
         print("%s:%s has connected." % client_address)
         client.send("Greetings from the ChatRoom! ".encode("utf8"))
-        # sleep(5)
-        client.send("Now type your name and press enter!".encode("utf8"))
+        # client.send("Now type your name and press enter!".encode("utf8"))
         addresses[client] = client_address
         Thread(target=handle_client, args=(client, client_address)).start()
 
 
 def handle_client(conn, addr):  # Takes client socket as argument.
     """Handles a single client connection."""
-    try:
-        name = conn.recv(BUFSIZ).decode("utf8")
-    except ConnectionResetError:
-        print("User disconnected")
-        return
-    welcome = 'Welcome %s! If you ever want to quit, type #quit to exit.' % name
-    conn.send(bytes(welcome, "utf8"))
-    msg = "%s from [%s] has joined the chat!" % (name, "{}:{}".format(addr[0], addr[1]))
-    broadcast(bytes(msg, "utf8"))
-    clients[conn] = name
+    # try:
+    #     name = conn.recv(BUFSIZ).decode("utf8")
+    # except ConnectionResetError:
+    #     pass
+    #     return
+    # welcome =
+    conn.send(bytes("Welcome", "utf8"))
+    # msg = "%s from [%s] has joined the chat!" % (name, "{}:{}".format(addr[0], addr[1]))
+    # broadcast(bytes(msg, "utf8"))
+    clients[conn] = addr
     while True:
         msg = conn.recv(BUFSIZ)
         if msg != bytes("#quit", "utf8"):
-            broadcast(msg, name + ": ")
+            broadcast(msg, addr + ": ")
         else:
             conn.send(bytes("#quit", "utf8"))
             conn.close()
             del clients[conn]
-            broadcast(bytes("%s has left the chat." % name, "utf8"))
+            # broadcast(bytes("%s has left the chat." % addr, "utf8"), "cc")
+            print("User disconnected")
             break
 
 
